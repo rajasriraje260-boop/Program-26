@@ -1,0 +1,52 @@
+class Solution:
+    # Function to count inversions in the array.
+    def inversionCount(self, arr):
+        return self.merge_sort_and_count(arr, 0, len(arr) - 1)
+
+    def merge_sort_and_count(self, arr, l, r):
+        count = 0
+        if l < r:
+            mid = (l + r) // 2
+            
+            # Recursively count inversions in left and right halves
+            count += self.merge_sort_and_count(arr, l, mid)
+            count += self.merge_sort_and_count(arr, mid + 1, r)
+            
+            # Count split inversions during merge
+            count += self.merge_and_count(arr, l, mid, r)
+        return count
+
+    def merge_and_count(self, arr, l, mid, r):
+        left = arr[l : mid + 1]
+        right = arr[mid + 1 : r + 1]
+        
+        i = 0 # pointer for left
+        j = 0 # pointer for right
+        k = l # pointer for original array
+        swaps = 0
+        
+        while i < len(left) and j < len(right):
+            if left[i] <= right[j]:
+                arr[k] = left[i]
+                i += 1
+            else:
+                # Inversion found!
+                arr[k] = right[j]
+                # All elements remaining in 'left' are greater than right[j]
+                swaps += (len(left) - i)
+                j += 1
+            k += 1
+            
+        # Fill remaining elements
+        while i < len(left):
+            arr[k] = left[i]
+            i += 1
+            k += 1
+        while j < len(right):
+            arr[k] = right[j]
+            j += 1
+            k += 1
+            
+        return swaps
+# Program-26
+Program 26
